@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # This script should run if 'minikube status' fails
-if $(minikube status | grep -q Running);
-then 
+if $(minikube status | grep -q Running)
+then
+echo Minikube Running!
+else 
 echo installing docker
 
 # Install Docker
@@ -30,9 +32,6 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest
 sudo dpkg -i minikube_latest_amd64.deb
 sudo minikube start
 
-
-else 
-  echo Minikube already running!;
 fi
 
 
