@@ -1,0 +1,103 @@
+version: 2
+jobs:
+  RunLintTests:
+    docker:
+      - image: rust:latest
+    steps:
+      - checkout
+      - run:
+          name: Lint Rust Code
+          command: |
+            cargo clippy
+      - run: 
+          name: Lint Docker File
+          command: |
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
+            chmod +x /bin/hadolint
+            hadolint Dockerfile
+
+  RunUnitTests:
+    docker: 
+      - image: rust:latest
+    steps:
+      - checkout
+      - run: cargo test
+
+  BuildAndPushDocker:
+    docker:
+      - image: docker:latest
+    steps:
+      - checkout
+      - run: 
+          name: Build Docker Image
+          command: |
+            cd .circleci/files
+            docker build -t hello_world_server .
+      - run:
+          name: Login To Docker Hub
+          command: | 
+            docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+      - run:
+          name: Push Docker Image
+          command: |
+            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:hello_world_server
+            docker push ${DOCKERHUB_USERNAME}/udacity:hello_world_server            
+
+  GenerateInfrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Update Infrastructure
+          command: |
+            cd .circleci/files
+            aws cloudformation deploy --stack-name udacityCapstone --template-file=aws_cloudformation.yml
+
+  ConfigureInfrastructure:
+    docker:
+      - image: mullnerz/ansible-playbook:latest
+    environment:
+        ANSIBLE_HOST_KEY_CHECKING: "false"
+    steps:
+      - checkout # Checkout so we know what to scale to!
+      - add_ssh_keys: 
+          fingerprints: ["0c:88:ce:b8:35:93:62:74:b6:43:82:ab:ef:53:21:f5"] 
+      - run: 
+          name: Generate inventory
+          command: |
+            echo "[web]" > /tmp/inventory.txt
+            aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-hello_world_server" --output text >> /tmp/inventory.txt
+      - run:
+          name: Update Infrastructure
+          command: |
+            ansible-playbook -vvv -i /tmp/inventory.txt .circleci/ansible/configure-server.yml             
+            
+  SmokeTest:
+    docker:
+      - image: curlimages/curl:latest
+    steps:
+      - run:
+          name: Smoke Test
+          command: |
+            aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-hello_world_server" --output text > /tmp/inventory.txt
+            if curl -s $(cat /tmp/inventory.txt); then return 0; else return 1; fi
+
+workflows:
+  default:
+    jobs:
+      - RunLintTests
+      - RunUnitTests
+      - BuildAndPushDocker:
+          requires: [RunLintTests, RunUnitTests]
+          filters:
+            branches:
+              only: [master]
+      - GenerateInfrastructure:
+          requires: [BuildAndPushDocker]
+      - ConfigureInfrastructure:
+          requires: [GenerateInfrastructure]
+      - SmokeTest:
+          requires: [ConfigureInfrastructure]
+
+      
