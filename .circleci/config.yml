@@ -92,7 +92,7 @@ workflows:
       #- RunLintTests
       #- RunUnitTests
       - BuildAndPushDocker:
-          requires: [RunLintTests, RunUnitTests]
+          #requires: [RunLintTests, RunUnitTests]
           filters:
             branches:
               only: [main]
