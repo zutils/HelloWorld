@@ -44,8 +44,8 @@ jobs:
       - run:
           name: Push Docker Image
           command: |
-            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:hello_world_server
-            docker push ${DOCKERHUB_USERNAME}/udacity:hello_world_server            
+            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:latest
+            docker push ${DOCKERHUB_USERNAME}/udacity:latest            
 
   GenerateInfrastructure:
     docker:
@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Smoke Test
           command: |
-            if curl -s http://44.242.101.111; then return 0; else return 1; fi
+            if $(curl -s 44.242.101.111 | grep -q Hello); then return 0; else return 1; fi
 
 workflows:
   default:
