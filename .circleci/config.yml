@@ -2,9 +2,10 @@ version: 2
 jobs:
   RunLintTests:
     docker:
-      - image: rust:latest
+      - image: rustlang/rust:nightly-slim
     steps:
       - checkout
+      - run: rustup component add clippy
       - run:
           name: Lint Rust Code
           command: |
@@ -18,7 +19,7 @@ jobs:
 
   RunUnitTests:
     docker: 
-      - image: rust:latest
+      - image: rustlang/rust:nightly-slim
     steps:
       - checkout
       - run: cargo test
@@ -92,7 +93,7 @@ workflows:
           requires: [RunLintTests, RunUnitTests]
           filters:
             branches:
-              only: [master]
+              only: [main]
       - GenerateInfrastructure:
           requires: [BuildAndPushDocker]
       - ConfigureInfrastructure:
