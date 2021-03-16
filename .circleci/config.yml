@@ -32,6 +32,11 @@ jobs:
       - checkout
       - run: dockerd
       - run: 
+          name: Fix Dockerd
+          command: |
+            update-alternatives --set iptables /usr/sbin/iptables-legacy
+            update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+      - run: 
           name: Build Docker Image
           command: |
             cd .circleci/files
