@@ -4,10 +4,12 @@
 
 #[get("/")]
 fn hello() -> String {
-    format!("Hello World!")
+    format!("Hello World!".to_string())
 }
 
 // Hosts on port 8000
 fn main() {
     rocket::ignite().mount("/", routes![hello]).launch();
 }
+
+lintfail;
