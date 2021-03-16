@@ -21,7 +21,7 @@ then
 echo "Kubernetes may already be port forwarding"
 else
 echo "Port forwarding kubernetes"
-nohup minikube kubectl --  port-forward deployment/hello-world-server 8000:8000 &
+nohup minikube kubectl --  port-forward deployment/hello-world-server 8000:8000 >> /tmp/forward_logs &
 fi
 
 # Run socat to forward port 80 to port 8000
@@ -30,5 +30,5 @@ then
 echo "Port 80 is already forwarded to 8000"
 else
 echo "Forwarding port 80 to 8000"
-nohup sudo socat TCP-LISTEN:80,fork TCP:localhost:8000 &
+sudo nohup socat TCP-LISTEN:80,fork TCP:localhost:8000 >> /tmp/socat_logs &
 fi
