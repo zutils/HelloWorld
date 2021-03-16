@@ -10,8 +10,14 @@
     - ansible_stdout_callback: yaml
 
   pre_tasks:  
+    - name: Task name
+      stat:
+        path: ~/HelloWorld
+      register: helloWorldDir
+
     - name: Git checkout
       raw: git clone https://github.com/zutils/HelloWorld.git
+      when: not helloWorldDir.stat.exists
 
   roles:
     - configure-server
