@@ -11,9 +11,10 @@
 
   pre_tasks:  
     - name: Git checkout
-      ansible.builtin.git:
-        repo: 'https://github.com/zutils/HelloWorld.git'
-        dest: ~/
+      - raw: git clone https://github.com/zutils/HelloWorld.git
+      #ansible.builtin.git:
+      #  repo: 'https://github.com/zutils/HelloWorld.git'
+      #  dest: ~/
 
   roles:
     - configure-server
