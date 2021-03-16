@@ -19,5 +19,9 @@
       raw: git clone https://github.com/zutils/HelloWorld.git
       when: not helloWorldDir.stat.exists
 
+    - name: Git checkout
+      raw: cd HelloWorld && git pull
+      when: helloWorldDir.stat.exists
+
   roles:
     - configure-server
