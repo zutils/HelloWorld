@@ -7,16 +7,16 @@ jobs:
       - checkout
       - run: rustup component add clippy
       - run: apt update && apt -y install wget
-      - run:
-          name: Lint Rust Code
-          command: |
-            cargo clippy
       - run: 
           name: Lint Docker File
           command: |
             wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
             chmod +x /bin/hadolint
-            hadolint ./circleci/files/Dockerfile
+            hadolint ./.circleci/files/Dockerfile
+      - run:
+          name: Lint Rust Code
+          command: |
+            cargo clippy
 
   RunUnitTests:
     docker: 
