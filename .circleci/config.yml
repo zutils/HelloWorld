@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: rustup component add clippy
-      - run: apt -y install wget
+      - run: apt update && apt -y install wget
       - run:
           name: Lint Rust Code
           command: |
