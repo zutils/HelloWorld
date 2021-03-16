@@ -71,7 +71,7 @@ jobs:
           name: Generate inventory
           command: |
             echo "[web]" > /tmp/inventory.txt
-            aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-hello_world_server" --output text >> /tmp/inventory.txt
+            echo "44.242.101.111" >> /tmp/inventory.txt
       - run:
           name: Update Infrastructure
           command: |
@@ -84,8 +84,7 @@ jobs:
       - run:
           name: Smoke Test
           command: |
-            aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-hello_world_server" --output text > /tmp/inventory.txt
-            if curl -s $(cat /tmp/inventory.txt); then return 0; else return 1; fi
+            if curl -s http://44.242.101.111; then return 0; else return 1; fi
 
 workflows:
   default:
