@@ -30,21 +30,21 @@ jobs:
       - image: docker:latest
     steps:
       - checkout
-      - run: systemctl start docker
+      - run: sudo dockerd
       - run: 
           name: Build Docker Image
           command: |
             cd .circleci/files
-            docker build -t hello_world_server .
+            sudo docker build -t hello_world_server .
       - run:
           name: Login To Docker Hub
           command: | 
-            docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+            sudo docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
       - run:
           name: Push Docker Image
           command: |
-            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:hello_world_server
-            docker push ${DOCKERHUB_USERNAME}/udacity:hello_world_server            
+            sudo docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:hello_world_server
+            sudo docker push ${DOCKERHUB_USERNAME}/udacity:hello_world_server            
 
   GenerateInfrastructure:
     docker:
