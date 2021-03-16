@@ -28,3 +28,10 @@ Resources:
       Tags:
         - Key: Name
           Value: backend-hello_world_server
+
+  ElasticIpAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      AllocationId: eipalloc-0c6edaf2400001884 # Attach to a permanent elastic ip
+      InstanceId: !Ref EC2Instance
+    
