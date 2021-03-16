@@ -1,3 +1,12 @@
 --- 
-- name: "Run Script"
-  raw: sh ./HelloWorld/.circleci/files/ansible_configure_script.sh
+- name: "Install Docker"
+  raw: sh ./HelloWorld/.circleci/files/install_docker.sh
+
+- name: "Set Docker Permissions"
+  raw: sh ./HelloWorld/.circleci/files/set_docker_permissions.sh
+
+- name: "Install Minikube"
+  raw: sh ./HelloWorld/.circleci/files/install_minikube.sh
+
+- name: "Roll Update"
+  raw: sh ./HelloWorld/.circleci/files/roll_update.sh
