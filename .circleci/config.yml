@@ -30,7 +30,7 @@ jobs:
       - image: docker:latest
     steps:
       - checkout
-      - run: dockerd --iptables=false
+      - setup_remote_docker
       - run: 
           name: Build Docker Image
           command: |
