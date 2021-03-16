@@ -91,15 +91,15 @@ workflows:
     jobs:
       #- RunLintTests
       #- RunUnitTests
-      #- BuildAndPushDocker:
-      #    requires: [RunLintTests, RunUnitTests]
-      #    filters:
-      #      branches:
-      #        only: [main]
-      #- GenerateInfrastructure:
-      #    requires: [BuildAndPushDocker]
-      - ConfigureInfrastructure
-          #requires: [GenerateInfrastructure]
+      - BuildAndPushDocker:
+          requires: [RunLintTests, RunUnitTests]
+          filters:
+            branches:
+              only: [main]
+      - GenerateInfrastructure:
+          requires: [BuildAndPushDocker]
+      - ConfigureInfrastructure:
+          requires: [GenerateInfrastructure]
       - SmokeTest:
           requires: [ConfigureInfrastructure]
 
