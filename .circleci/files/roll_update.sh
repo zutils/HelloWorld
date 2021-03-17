@@ -29,6 +29,3 @@ else
 echo "Forwarding port 80 to 8000"
 sudo nohup socat TCP-LISTEN:80,fork TCP:localhost:8000 >> /tmp/socat_logs &
 fi
-
-echo "Rollout status:"
-minikube kubectl -- rollout status deployments/hello-world-server
