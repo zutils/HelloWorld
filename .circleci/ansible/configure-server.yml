@@ -9,7 +9,7 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
   environment: 
-    IMAGETAG: {{ IMAGETAG }}
+    IMAGETAG: "{{ IMAGETAG }}"
 
   pre_tasks:  
     - name: Tagname
