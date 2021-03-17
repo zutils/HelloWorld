@@ -8,8 +8,13 @@
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
+  environment: 
+    IMAGETAG: {{ IMAGETAG }}
 
   pre_tasks:  
+    - name: Tagname
+      raw: echo "Using tagname {{ IMAGETAG }}"
+
     - name: Task name
       stat:
         path: ~/HelloWorld

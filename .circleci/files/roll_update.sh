@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+cat ~/HelloWorld/.circleci/files/deployment.yml | sed -s "s|IMAGETAG|$IMAGETAG|g" > /tmp/modified_deployment.yml
+
 # Note: This won't do anything if we are already deployed
 echo "Initializing Deployment"
-minikube kubectl -- apply -f ~/HelloWorld/.circleci/files/deployment.yml
+minikube kubectl -- apply -f /tmp/modified_deployment.yml
 
 echo "Rolling update!"
 minikube kubectl -- rollout restart deployments/hello-world-server

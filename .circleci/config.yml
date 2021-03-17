@@ -44,8 +44,8 @@ jobs:
       - run:
           name: Push Docker Image
           command: |
-            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:latest
-            docker push ${DOCKERHUB_USERNAME}/udacity:latest            
+            docker tag hello_world_server ${DOCKERHUB_USERNAME}/udacity:${CIRCLE_WORKFLOW_ID:0:7}
+            docker push ${DOCKERHUB_USERNAME}/udacity:${CIRCLE_WORKFLOW_ID:0:7}            
 
   GenerateInfrastructure:
     docker:
@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Update Infrastructure
           command: |
-            ansible-playbook -vvv -i /tmp/inventory.txt .circleci/ansible/configure-server.yml             
+            ansible-playbook -vvv -i /tmp/inventory.txt .circleci/ansible/configure-server.yml --extra-vars "IMAGETAG=${CIRCLE_WORKFLOW_ID:0:7}"          
             
   SmokeTest:
     docker:
