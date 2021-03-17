@@ -1,28 +1,25 @@
 #!/usr/bin/env bash
 
-# Do rolling update!
-dockerpath=jzypo/udacity:hello_world_server
-
-if $(minikube kubectl -- get deployments | grep -q "No Resources")
-then
-minikube kubectl -- create deployment hello-world-server --image $dockerpath --port=8000
-else
-echo "Found Pod!"
-fi
-
-minikube kubectl -- get pods
+# Note: This won't do anything if we are already deployed
+echo "Initializing Deployment"
+minikube kubectl -- apply -f ~/HelloWorld/.circleci/files/deployment.yml
 
 echo "Rolling update!"
-minikube kubectl -- set image deployments/hello-world-server udacity=jzypo/udacity:latest
+minikube kubectl -- rollout restart deployments/hello-world-server
 
-# Run socat to forward port 80 to port 8000
+# Debug information
+minikube kubectl -- get deployments
+
+# Open up port 8000 for Kubernetes
 if $(ps -A | grep -q kubectl)
 then
-echo "Kubernetes may already be port forwarding"
-else
-echo "Port forwarding kubernetes"
-nohup minikube kubectl --  port-forward deployment/hello-world-server 8000:8000 >> /tmp/forward_logs &
+echo "Killing forwarding service!"
+kill -9 $(ps -A | grep kubectl | cut -d " " -f 3)
 fi
+
+echo "Port forwarding kubernetes"
+# This has to be done after re-deploying
+nohup minikube kubectl -- port-forward deployment/hello-world-server 8000:8000 >> /tmp/forward_logs &
 
 # Run socat to forward port 80 to port 8000
 if $(ps -A | grep -q socat)
@@ -32,3 +29,6 @@ else
 echo "Forwarding port 80 to 8000"
 sudo nohup socat TCP-LISTEN:80,fork TCP:localhost:8000 >> /tmp/socat_logs &
 fi
+
+echo "Rollout status:"
+minikube kubectl -- rollout status deployments/hello-world-server
