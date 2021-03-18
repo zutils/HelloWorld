@@ -89,10 +89,10 @@ jobs:
 workflows:
   default:
     jobs:
-      #- RunLintTests
-      #- RunUnitTests
+      - RunLintTests
+      - RunUnitTests
       - BuildAndPushDocker:
-          #requires: [RunLintTests, RunUnitTests]
+          requires: [RunLintTests, RunUnitTests]
           filters:
             branches:
               only: [main]
