@@ -27,7 +27,7 @@ Resources:
       ImageId: ami-07dd19a7900a1f049
       BlockDeviceMappings: 
         - Ebs:
-            VolumeSize: 30
+            VolumeSize: 40
             VolumeType: gp2
             DeleteOnTermination: true
           DeviceName: /dev/xvdcz
