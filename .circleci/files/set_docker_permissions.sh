@@ -7,6 +7,5 @@ else
 
 # Initialize Docker to not use sudo
 sudo usermod -aG docker $USER
-newgrp docker
 
 fi
