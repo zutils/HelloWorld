@@ -5,7 +5,7 @@
 
 #[get("/")]
 fn hello() -> String {
-    format!("Final Test Success!")
+    format!("Hello Final Test Success!")
 }
 
 // Hosts on port 8000
