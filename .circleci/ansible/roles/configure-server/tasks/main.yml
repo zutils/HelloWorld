@@ -9,7 +9,7 @@
   raw: sh ./HelloWorld/.circleci/files/install_minikube.sh
 
 - name: "Patching Image Name"
-  raw: echo "Patching with {{ IMAGETAG }} && cat ~/HelloWorld/.circleci/files/deployment.yml | sed -s "s|IMAGETAG|{{ IMAGETAG }}|g" > /tmp/modified_deployment.yml
+  raw: cat ~/HelloWorld/.circleci/files/deployment.yml | sed -s "s|IMAGETAG|{{ IMAGETAG }}|g" > /tmp/modified_deployment.yml
 
 - name: "Roll Update"
   environment:
